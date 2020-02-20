@@ -176,8 +176,16 @@ export default {
         .update({
           details: event.details
         });
-        this.selectedOpen = false;
-        this.currentlyEditing = null;
+      this.selectedOpen = false;
+      this.currentlyEditing = null;
+    },
+    async deleteEvent(event) {
+      await db
+        .collection("calEvent")
+        .doc(event)
+        .delete();
+      this.selectedOpen = false;
+      this.getEvents();
     },
     getEventColor(event) {
       return event.color;
