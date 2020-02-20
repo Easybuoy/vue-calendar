@@ -37,6 +37,28 @@
           </v-menu>
         </v-toolbar>
       </v-sheet>
+
+      <!-- Add event dialog -->
+      <v-dialog v-model="dialog" max-width="500">
+        <v-card>
+          <v-container>
+            <v-form @submit.prevent="addEvent">
+              <v-text-field v-model="name" type="text" label="event name (required"></v-text-field>
+              <v-text-field v-model="details" type="text" label=" detail "></v-text-field>
+              <v-text-field v-model="start" type="date" label="start (required"></v-text-field>
+              <v-text-field v-model="end" type="date" label="end (required"></v-text-field>
+              <v-text-field v-model="color" type="color" label="color (click to open color menu"></v-text-field>
+              <v-btn
+                type="submit"
+                color="primary"
+                class="mr-4"
+                @click.stop="dialog=false"
+              >Create Event</v-btn>
+            </v-form>
+          </v-container>
+        </v-card>
+      </v-dialog>
+
       <v-sheet height="600">
         <v-calendar
           ref="calendar"
@@ -188,6 +210,25 @@ export default {
       this.selectedOpen = false;
       this.getEvents();
     },
+    async addEvent() {
+      if (this.name && this.start && this.end) {
+        await db.collection("calEvent").add({
+          name: this.name,
+          details: this.details,
+          start: this.start,
+          end: this.end,
+          color: this.color
+        });
+        this.getEvents();
+        this.name = "";
+        this.details = "";
+        this.start = "";
+        this.end = "";
+        this.color = "1976D2";
+      } else {
+        alert("Name, start and end date are required");
+      }
+    },
     getEventColor(event) {
       return event.color;
     },
@@ -232,12 +273,6 @@ export default {
         ? "th"
         : ["th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th"][d % 10];
     }
-
-    // formatDate (a, withTime) {
-    //     return withTime
-    //       ? `${a.getFullYear()}-${a.getMonth() + 1}-${a.getDate()} ${a.getHours()}:${a.getMinutes()}`
-    //       : `${a.getFullYear()}-${a.getMonth() + 1}-${a.getDate()}`
-    //   },
   }
 };
 </script>
