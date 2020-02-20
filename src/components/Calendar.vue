@@ -3,9 +3,7 @@
     <v-col>
       <v-sheet height="64">
         <v-toolbar flat color="white">
-          <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">
-            Today
-          </v-btn>
+          <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">Today</v-btn>
           <v-btn fab text small color="grey darken-2" @click="prev">
             <v-icon small>mdi-chevron-left</v-icon>
           </v-btn>
@@ -76,9 +74,7 @@
               <span v-html="selectedEvent.details"></span>
             </v-card-text>
             <v-card-actions>
-              <v-btn text color="secondary" @click="selectedOpen = false">
-                Cancel
-              </v-btn>
+              <v-btn text color="secondary" @click="selectedOpen = false">Cancel</v-btn>
             </v-card-actions>
           </v-card>
         </v-menu>
@@ -88,28 +84,46 @@
 </template>
 
 <script>
+import { db } from "@/main";
+
 export default {
   data: () => ({
     today: new Date().toISOString().substr(0, 10),
     focus: new Date().toISOString().substr(0, 10),
-    type: 'month',
+    type: "month",
     typeToLabel: {
-      month: 'Month',
-      week: 'Week',
-      day: 'Day',
-      '4day': '4 Days'
+      month: "Month",
+      week: "Week",
+      day: "Day",
+      "4day": "4 Days"
     },
     name: null,
     details: null,
     start: null,
     end: null,
-    color: '#1976D2',
+    color: "#1976D2",
     currentlyEditing: null,
     selectedEvent: {},
     selectedElements: null,
     selectedOpen: false,
     events: [],
     dialog: false
-  })
+  }),
+  mounted() {
+    this.getEvents();
+  },
+  methods: {
+    async getEvents() {
+      let snapshot = await db.collection("calEvent").get();
+      let events = [];
+      snapshot.forEach(doc => {
+        let appData = doc.data();
+        appData.id = doc.id;
+        events.push(appData)
+      });
+      
+      this.events = events;
+    }
+  }
 };
 </script>
