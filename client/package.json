@@ -11,6 +11,7 @@
     "core-js": "^3.6.4",
     "dotenv": "^8.2.0",
     "firebase": "^7.8.2",
+    "netlify-lambda": "^1.6.3",
     "vue": "^2.6.11",
     "vue-textarea-autosize": "^1.1.1",
     "vuetify": "^2.2.11"
